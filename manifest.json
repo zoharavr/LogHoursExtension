@@ -12,7 +12,8 @@
             ],
             "js": [
                 "Content.js"
-            ]
+            ],
+            "all_frames": true
         }
     ],
     "background": {
