@@ -5,10 +5,25 @@ chrome.runtime.onMessage.addListener(
         optionsButton.click();
         let logWork = document.getElementById('log-work');
         logWork.click();
+        
         console.log('opened');
-        let el = document.getElementById('log-work-time-logged');
-        el.onload = function(){   let timeInHors = request.totalTime / 60;
-            el.setAttribute("value", timeInHors)};
+        var promise = ensureFooIsSet();
+        promise.then(function(){
+            let el = document.getElementById('log-work-time-logged');
+        	let timeInHors = request.totalTime / 60;
+            el.setAttribute("value", timeInHors);
+        })
+      
     });
 
+    function ensureFooIsSet() {
+        return new Promise(function (resolve, reject) {
+            (function waitForFoo(){
+                if (document.getElementById('log-work-time-logged')) {
+                    console.log('success')
+                    return resolve();}
+                setTimeout(waitForFoo, 30);
+            })();
+        });
+    }
       
