@@ -3,12 +3,12 @@
     "name": "My Cool Extension",
     "version": "0.1",
     "browser_action": {
-        "default_popup":"view.html"
+        "default_popup": "view.html"
     },
     "content_scripts": [
         {
             "matches": [
-                "<all_urls>"
+                "https://*www.atlassian.com/software/jira/*"
             ],
             "js": [
                 "Content.js"
@@ -17,6 +17,8 @@
         }
     ],
     "background": {
-        "scripts": ["background.js"]
-      }
+        "scripts": [
+            "background.js"
+        ]
+    }
 }
