@@ -24,9 +24,9 @@ function onClickStop() {
 
 function showTotalTimeOnPopUp(response) {
     let element = document.createElement('div');
-    element.innerHTML = response.totalTime / 1000 + ' SECONDS';
+    element.innerHTML = response.totalTime / 60000 + ' MINUTES';
     document.body.appendChild(element);
-    data.totalTime = response.totalTime;
+    data.totalTime = response.totalTime / 6000;
     sendtoContent();
 }
 
