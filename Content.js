@@ -1,22 +1,26 @@
+let data = {
+    totalTime: 0
+};
+
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
-        clickOnElement('opsbar-operations_more');
-        clickOnElement('log-work');
-
-        var promise =checkForDialogOpen();   
- 
-        promise.then(function(){
-            let el = document.getElementById('log-work-time-logged');
-            let timeInHors = request.totalTime / 60;
-            el.setAttribute("value", timeInHors);
-        })
+        data.totalTime = request.totalTime;
+        handleHoursLogging();
     });
 
-// function logHoursInInputElement(totalWorkTime) {
-//     let el = document.getElementById('log-work-time-logged');
-//     let timeInHors = totalWorkTime / 60;
-//     el.setAttribute("value", timeInHors);
-// }
+function handleHoursLogging() {
+    clickOnElement('opsbar-operations_more');
+    clickOnElement('log-work');
+    var promise = checkForDialogOpen();
+    logHoursInInputElement.bind(promise);
+    promise.then(logHoursInInputElement);
+}
+
+function logHoursInInputElement() {
+    let el = document.getElementById('log-work-time-logged');
+    let timeInHors = data.totalTime / 60;
+    el.setAttribute("value", timeInHors);
+}
 
 function clickOnElement(elementId) {
     let clickable = document.getElementById(elementId);
