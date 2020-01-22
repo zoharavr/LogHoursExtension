@@ -1,39 +1,45 @@
 let data = {
     totalTime: 0
 };
+const MAX_TIME = 1000
 
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
         data.totalTime = request.totalTime;
+        getElementIfExist('opsbar-operations_more').then(clickElement);
+        getElementIfExist('log-work').then(clickElement);
         handleHoursLogging();
     });
 
+function clickElement(element) {
+    if(element.hasOwnProperty("actualElement"))
+        element.actualElement.click();
+    else element.click();
+}
 function handleHoursLogging() {
-    clickOnElement('opsbar-operations_more');
-    clickOnElement('log-work');
-    var promise = checkForDialogOpen();
-    logHoursInInputElement.bind(promise);
-    promise.then(logHoursInInputElement);
+    let promise = getElementIfExist('log-work-time-logged');
+    promise.then(function (element) {
+        let timeInHours = data.totalTime / 60;
+        setElementValue(element.actualElement, timeInHours);
+    });
 }
 
-function logHoursInInputElement() {
-    let el = document.getElementById('log-work-time-logged');
-    let timeInHors = data.totalTime / 60;
-    el.setAttribute("value", timeInHors);
+function setElementValue(el, valueToSet) {
+    el.setAttribute("value", valueToSet);
 }
 
-function clickOnElement(elementId) {
-    let clickable = document.getElementById(elementId);
-    clickable.click();
-}
-
-function checkForDialogOpen() {
+function getElementIfExist(id) {
+    let timeout = 0;
     return new Promise(function (resolve, reject) {
-        (function waitForInputElement() {
-            if (document.getElementById('log-work-time-logged')) {
-                return resolve();
+        (function waitForElement() {
+            if (document.getElementById(id)) {
+                return resolve({ actualElement: document.getElementById(id) });
             }
-            setTimeout(waitForInputElement, 30);
+            else timeout += 30;
+            if (timeout >= MAX_TIME) {
+                return reject(Error('Element not found'));
+            }
+            setTimeout(waitForElement, 30);
         })();
     });
 }

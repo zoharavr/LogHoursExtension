@@ -1,13 +1,10 @@
 let data = {
     totalTime: 0
 };
-document.addEventListener('DOMContentLoaded', function () {
-    setUp();
-}, false);
-
-function setUp() {
-    document.getElementById("start").addEventListener('click', onClickStart);
-    document.getElementById("stop").addEventListener('click', onClickStop);
+addListeners();
+function addListeners() {
+    document.getElementById("startBtn").addEventListener('click', onClickStart);
+    document.getElementById("stopBtn").addEventListener('click', onClickStop);
 }
 
 function onClickStart() {
@@ -18,16 +15,21 @@ function onClickStart() {
 function onClickStop() {
     let end = new Date().getTime();
     chrome.runtime.sendMessage({ msg: 'END', time: end }, function (response) {
-        showTotalTimeOnPopUp(response);
+        showTotalTimeInPopUp(response);
     });
 }
 
-function showTotalTimeOnPopUp(response) {
-    let element = document.createElement('div');
+function showTotalTimeInPopUp(response) {
+    let element = addNewElementToHTML('div');
     element.innerHTML = response.totalTime / 60000 + ' MINUTES';
-    document.body.appendChild(element);
     data.totalTime = response.totalTime / 6000;
     sendtoContent();
+}
+
+function addNewElementToHTML(elementType) {
+    let element = document.createElement(elementType);
+    document.body.appendChild(element);
+    return element;
 }
 
 function sendtoContent() {
